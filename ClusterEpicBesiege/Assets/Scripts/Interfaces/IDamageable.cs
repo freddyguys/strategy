@@ -2,5 +2,6 @@
 
 public interface IDamageable
 {
-    void dealDamage(float damage);
+    void DealDamage(float damage);
+    bool IsAlive { get; }
 }

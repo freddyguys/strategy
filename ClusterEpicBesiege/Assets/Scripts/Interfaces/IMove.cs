@@ -2,5 +2,5 @@
 
 public interface IMove
 {
-    void MoveTo(Vector3 position);
+    void MoveTo(Vector3 position, GameObject target = null);
 }

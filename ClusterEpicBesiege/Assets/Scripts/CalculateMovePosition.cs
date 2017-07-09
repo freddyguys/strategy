@@ -6,7 +6,7 @@ using UnityEngine;
 public static class CalculateMovePosition
 {
     private static Vector3[,] matrix;
-    private static float step = 0.4f;
+    private static float step = 0.8f;
 
     public static Vector3[,] Calulate(int count, out int sqrt)
     {

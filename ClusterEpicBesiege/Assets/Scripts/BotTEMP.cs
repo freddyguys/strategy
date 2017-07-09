@@ -6,11 +6,13 @@ using UnityEngine;
 public class BotTEMP : MonoBehaviour, IDamageable
 {
     private float health = 100f;
-    public void dealDamage(float damage)
+    private bool isAlive = true;
+    public bool IsAlive { get { return isAlive; } }
+    public void DealDamage(float damage)
     {
         if (health > 0)
         { health -= damage; print(health); }
-        else Destroy(gameObject);
+        else isAlive = false;
     }
 
 }
