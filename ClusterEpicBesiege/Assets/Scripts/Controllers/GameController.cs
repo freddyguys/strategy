@@ -41,12 +41,6 @@ public class GameController : MonoBehaviour
         IsSpawnGoodGuy = true;
     }
 
-
-    //void Update()
-    //{
-
-    //}
-
     public bool IsSpawn { get { return SoldierSpawner.instance.isSpawn; } set { SoldierSpawner.instance.isSpawn = value; } }
     public bool IsSpawnGoodGuy { get { return SoldierSpawner.instance.isSpawnGoodGuy; } set { SoldierSpawner.instance.isSpawnGoodGuy = value; } }
     public bool IsSpawnBadGuy { get { return SoldierSpawner.instance.isSpawnBadGuy; } set { SoldierSpawner.instance.isSpawnBadGuy = value; } }

@@ -8,11 +8,12 @@ public class BotTEMP : MonoBehaviour, IDamageable
     private float health = 100f;
     private bool isAlive = true;
     public bool IsAlive { get { return isAlive; } }
+
     public void DealDamage(float damage)
     {
         if (health > 0)
-        { health -= damage; print(health); }
-        else isAlive = false;
+        { health -= damage; }
+        else { isAlive = false; Destroy(gameObject, 1f); }
     }
 
 }

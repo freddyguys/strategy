@@ -7,8 +7,6 @@ public class SoldierSpawner : MonoBehaviour
 
     public static SoldierSpawner instance;
 
-    public GameObject goodGuy;
-    public GameObject badGuy;
     public GameObject spawnPointForGoodGuys;
     private Vector3 goodPoint;
 
@@ -46,8 +44,8 @@ public class SoldierSpawner : MonoBehaviour
 
     private void AddGoodGuy()
     {
-        GameObject soldier = Instantiate(goodGuy, goodPoint, transform.rotation);
-        soldier.GetComponent<SoldierController>().soldier = new Soldier("GoodGuy", "ico", "bla-bla", TeamTag.GoodGuy);
+        GameObject soldier = Instantiate(SpawnController.instance.GetCurrenSoldier(), goodPoint, transform.rotation);
+       // soldier.GetComponent<SoldierController>().soldier = new Soldier("GoodGuy", "ico", "bla-bla", TeamTag.GoodGuy);
     }
 
     private void AddBadGuy()

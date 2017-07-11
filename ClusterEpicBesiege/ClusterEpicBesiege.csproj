@@ -75,12 +75,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Arrow.cs" />
     <Compile Include="Assets\Scripts\Attack.cs" />
     <Compile Include="Assets\Scripts\BotTEMP.cs" />
     <Compile Include="Assets\Scripts\CalculateMovePosition.cs" />
+    <Compile Include="Assets\Scripts\Controllers\ArcherController.cs" />
     <Compile Include="Assets\Scripts\Controllers\GameController.cs" />
     <Compile Include="Assets\Scripts\Controllers\MouseController.cs" />
     <Compile Include="Assets\Scripts\Controllers\SoldierController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\SpawnController.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IDamageable.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IMove.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ISelectable.cs" />
