@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SoldierSpawner : MonoBehaviour
@@ -45,7 +44,6 @@ public class SoldierSpawner : MonoBehaviour
     private void AddGoodGuy()
     {
         GameObject soldier = Instantiate(SpawnController.instance.GetCurrenSoldier(), goodPoint, transform.rotation);
-       // soldier.GetComponent<SoldierController>().soldier = new Soldier("GoodGuy", "ico", "bla-bla", TeamTag.GoodGuy);
     }
 
     private void AddBadGuy()

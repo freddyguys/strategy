@@ -1,183 +1,138 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-
-public class SoldierController : MonoBehaviour, IMove, ISelectable, IDamageable
+public class SoldierController : MonoBehaviour
 {
-    public Soldier soldier;
-    public Transform weapon;
-    public Animator animator;
+    [SerializeField]
+    private GameObject Soldier;
+    [SerializeField]
+    private GameObject Movement;
+    [SerializeField]
+    private GameObject Attack;
+    [SerializeField]
+    private GameObject Select;
+    [SerializeField]
+    private GameObject Damage;
+    [SerializeField]
+    private GameObject Weapon;
 
 
-    private GameObject indicator;
-    private float speed = 1f;
-    private float obstacleRange = 5f;
-    private float health = 100;
-    private float attackDistance = 0.4f;
 
-    private Vector3 point;
 
-    private Vector3 attackPosition;
+    public ISoldier SoldierInterface;
+    public IAttackable AttackInterface;
+    public IDamageable DamageInterface;
+    public IMovable MoveInterface;
+    public ISelectable SelectInterface;
+    public IWeapon WeaponInterface;
 
-    private bool isMoveToTarget = false;
-    private bool isFind = false;
-    private bool isMoving = false;
-    private bool checkRange = false;
+    private Animator animator;
+    private NavMeshAgent agent;
+    private Transform myTransform;
+    private TeamTag enemyTeamTag;
+
+    private bool isAttack = false;
     private bool isAlive = true;
-    private bool checkRotation = false;
-
-    private GameObject target;
-
-    NavMeshAgent agent;
-
-    private IMove realizationIMove;
+    private bool isFind = true;
+    private bool isMove = false;
+    private bool isMoveToTarget = false;
+    public bool IsAttack { get { return isAttack; } set { isAttack = value; } }
     public bool IsAlive { get { return isAlive; } }
-    public Vector3 Positions { get { return transform.position; } }
-    public bool Indicator { get { return indicator.activeSelf; } set { indicator.SetActive(value); } }
-    public IMove referenceIMove { get { return realizationIMove; } }
+    public bool IsFind { get { return isFind; } set { isFind = value; } }
+    public bool IsMove { get { return isMove; } set { isMove = value; } }
+    public bool IsMoveToTarget { get { return isMoveToTarget; } set { isMoveToTarget = value; } }
+    public Animator Animator { get { return animator; } }
+
+
+    private SoldierController targetContrl;
+    public SoldierController TargetContr { get { return targetContrl; } set { targetContrl = value; } }
+
+
 
     private void Awake()
     {
-        indicator = transform.GetChild(0).gameObject;
-        agent = GetComponent<NavMeshAgent>();
+        animator = transform.parent.GetComponent<Animator>();
+        SoldierInterface = Soldier.GetComponent<ISoldier>();
+        AttackInterface = Attack.GetComponent<IAttackable>();
+        MoveInterface = Movement.GetComponent<IMovable>();
+        SelectInterface = Select.GetComponent<ISelectable>();
+        DamageInterface = Damage.GetComponent<IDamageable>();
+        WeaponInterface = Weapon.GetComponent<IWeapon>();
+        agent = transform.parent.GetComponent<NavMeshAgent>();
+        myTransform = transform.parent.GetComponent<Transform>();
+        enemyTeamTag = SoldierInterface.Tag == TeamTag.BadGuy ? TeamTag.GoodGuy : TeamTag.BadGuy;
     }
 
-    void Start()
+    private void Start()
     {
-        realizationIMove = gameObject.GetComponent<SoldierController>() as IMove;
-        ISelectable realizationISelectable = gameObject.GetComponent<SoldierController>() as ISelectable;
-        GameController.instance.AddFriendlUnit(gameObject, realizationIMove, realizationISelectable);
-        // first position after spawn
-        point = new Vector3(UnityEngine.Random.Range(0.5f, 1.5f), transform.position.y, UnityEngine.Random.Range(0.5f, 1.5f));
-        MoveTo(point);
-        StartCoroutine(FindTarget());
+        GameController.instance.AddlSoldier(GetComponent<SoldierController>());
     }
 
     private void Update()
     {
-        if (isMoving && !isMoveToTarget)
+        if (isFind)
         {
-            if (Vector3.Distance(point, transform.position) < 0.5f)
+            float oldDistance = 1000f;
+            SoldierController _targetContrl = null;
+            foreach (Collider col in Physics.OverlapSphere(transform.position, SoldierInterface.DetectionRadius))
             {
-                animator.SetBool("move", false);
-                isMoving = false;
-                isFind = true;
-                agent.Stop();
-                agent.ResetPath();
+                if (col.tag == enemyTeamTag.ToString() && col.transform.GetChild(0).GetComponent<SoldierController>().IsAlive)
+                {
+                    var currentDistance = Vector3.Distance(col.transform.position, GetPositions());
+                    if (oldDistance > currentDistance) { oldDistance = currentDistance; _targetContrl = col.transform.GetChild(0).GetComponent<SoldierController>(); }
+                }
+            }
+            if (_targetContrl != null)
+            {
+                isFind = false;
+                AttackInterface.AttackTarget(_targetContrl);
             }
         }
-        else if (isMoving && isMoveToTarget)
+
+        if (isMove && isMoveToTarget)
         {
-            if (Vector3.Distance(point, transform.position) < 1f)
+            //if (agent.remainingDistance <= SoldierInterface.AttackRange)
+            if (Vector3.Distance(GetPositions(), TargetContr.GetPositions()) <= SoldierInterface.AttackRange)
             {
-                animator.SetBool("move", false);
-                isMoving = false;
                 isMoveToTarget = false;
+                isMove = false;
                 agent.Stop();
                 agent.ResetPath();
-                checkRotation = true;
-                StartCoroutine(AttackTarget(target));
+                AttackInterface.AttackTarget(targetContrl);
             }
         }
 
-        if (!isMoving && !isMoveToTarget && checkRotation && target != null)
+        if (isMove && !isMoveToTarget)
         {
-            var lookPos = target.transform.position - transform.position;
-            lookPos.y = 0;
-            var rotation = Quaternion.LookRotation(lookPos);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
-        }
-
-    }
-
-    public void MoveTo(Vector3 position, GameObject target = null)
-    {
-        if (target != null)
-        {
-            isMoveToTarget = true;
-            this.target = target;
-            Vector3 offset = new Vector3(Mathf.Sin(UnityEngine.Random.Range(-360f, 360f)), 0f, Mathf.Cos(UnityEngine.Random.Range(-360f, 360f))) * 0.8f;
-            point = position + offset;
-        }
-        else
-        {
-            isMoveToTarget = false;
-            //point = (position - ((position - transform.position).normalized * 1f));
-            point = position;
-        }
-        animator.SetBool("attack", false);
-        animator.SetBool("move", true);
-        StopCoroutine(AttackTarget(target));
-        isMoving = true;
-        isFind = false;
-        checkRotation = false;
-        agent.Resume();
-        agent.SetDestination(point);
-    }
-
-    IEnumerator FindTarget()
-    {
-        for (;;)
-        {
-            if (isFind)
+            if (agent.remainingDistance <= agent.stoppingDistance)
             {
-                Collider[] colliders;
-                float distance = 1000f;
-                GameObject target = null;
-                colliders = Physics.OverlapSphere(transform.position, obstacleRange);
-                foreach (Collider col in colliders)
-                {
-                    if (col.tag == "badGuy")
-                    {
-                        var temp = Vector3.Distance(col.transform.position, transform.position);
-                        if (distance > temp) { distance = temp; target = col.gameObject; }
-                    }
-                }
-                if (target != null)
-                {
-                    isFind = false;
-                    MoveTo(target.transform.position, target);
-                }
+                isMove = false;
+                isFind = true;
             }
-            yield return new WaitForSecondsRealtime(1f);
         }
-    }
 
-    IEnumerator AttackTarget(GameObject target)
-    {
-        for (;;)
+        if (targetContrl != null)
         {
-            if (target != null)
-            {
-                if (target.GetComponent<IDamageable>().IsAlive && !isMoving)
-                {
-                    animator.SetBool("attack", true);
-                }
-                else break;
-            }
-            yield return new WaitForSecondsRealtime(1f);
+            Vector3 lookPos = targetContrl.GetPositions() - GetPositions();
+            Quaternion rotation = Quaternion.LookRotation(lookPos);
+            myTransform.rotation = Quaternion.Slerp(myTransform.rotation, rotation, Time.deltaTime * SoldierInterface.RotationSpeed);
         }
-        target = null;
-        animator.SetBool("attack", false);
-        isFind = true;
     }
 
-    public void DealDamage(float damage)
+    public Vector3 GetPositions()
+    { return transform.position; }
+
+    public void StopSoldier()
     {
-        if (health > 0)
-            health -= damage;
-        else isAlive = false;
+        agent.Stop();
+        agent.ResetPath();
     }
 
-    public void Attack()
+    public void Death()
     {
-        RaycastHit hit;
-        if (target != null && Physics.Raycast(transform.position, target.transform.position - transform.position, out hit, 1.5f))
-        {
-            if (hit.collider.tag == "badGuy") hit.collider.GetComponent<IDamageable>().DealDamage(10f);
-        }
+        isAlive = false;
+        GameController.instance.DeleateSoldier(GetComponent<SoldierController>());
+        // dead animation
     }
 }

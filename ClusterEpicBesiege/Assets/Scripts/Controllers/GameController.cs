@@ -5,35 +5,32 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 
-    private List<ISelectable> realizationISelectable = new List<ISelectable>();
-    private List<IMove> realizationIMove = new List<IMove>();
-    private List<GameObject> unit;
+    private List<SoldierController> soldiers = new List<SoldierController>();
 
     public static GameController instance;
 
     private void Awake()
     {
-        unit = new List<GameObject>();
         if (instance == null) instance = this;
     }
 
-    public void AddFriendlUnit(GameObject unitObj, IMove iMove, ISelectable iSelectable)
+    public void AddlSoldier(SoldierController soldier)
     {
-        unit.Add(unitObj);
-        realizationIMove.Add(iMove);
-        realizationISelectable.Add(iSelectable);
+        soldiers.Add(soldier);
     }
 
-    public List<IMove> GetIMoveRealization()
+    public void DeleateSoldier(SoldierController soldier)
     {
-        return realizationIMove;
+        foreach (SoldierController sc in soldiers.ToArray())
+        {
+            if (soldier == sc) soldiers.Remove(sc);
+        }
     }
 
-    public List<ISelectable> GetISelectableRealization()
+    public List<SoldierController> GetSoldiers()
     {
-        return realizationISelectable;
+        return soldiers;
     }
-
 
     void Start()
     {

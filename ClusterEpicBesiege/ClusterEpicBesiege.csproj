@@ -75,24 +75,35 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Arrow.cs" />
-    <Compile Include="Assets\Scripts\Attack.cs" />
-    <Compile Include="Assets\Scripts\BotTEMP.cs" />
-    <Compile Include="Assets\Scripts\CalculateMovePosition.cs" />
-    <Compile Include="Assets\Scripts\Controllers\ArcherController.cs" />
     <Compile Include="Assets\Scripts\Controllers\GameController.cs" />
-    <Compile Include="Assets\Scripts\Controllers\MouseController.cs" />
     <Compile Include="Assets\Scripts\Controllers\SoldierController.cs" />
     <Compile Include="Assets\Scripts\Controllers\SpawnController.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IAttackable.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IDamageable.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IMove.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IMovable.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ISelectable.cs" />
-    <Compile Include="Assets\Scripts\MovingCamera.cs" />
-    <Compile Include="Assets\Scripts\SelectedArea.cs" />
-    <Compile Include="Assets\Scripts\Soldier.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\ISoldier.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IWeapon.cs" />
+    <Compile Include="Assets\Scripts\Mouse and Camera\CalculateMovePosition.cs" />
+    <Compile Include="Assets\Scripts\Mouse and Camera\MouseController.cs" />
+    <Compile Include="Assets\Scripts\Mouse and Camera\MovingCamera.cs" />
+    <Compile Include="Assets\Scripts\Mouse and Camera\SelectedArea.cs" />
     <Compile Include="Assets\Scripts\SoldierSpawner.cs" />
-    <Compile Include="Assets\Scripts\SoldierType.cs" />
-    <Compile Include="Assets\Scripts\TeamTag.cs" />
+    <Compile Include="Assets\Scripts\Soldiers\BadGuys\Banerman.cs" />
+    <Compile Include="Assets\Scripts\Soldiers\GoodGuys\Archer.cs" />
+    <Compile Include="Assets\Scripts\Soldiers\GoodGuys\Swordsman.cs" />
+    <Compile Include="Assets\Scripts\Soldiers\Soldier.cs" />
+    <Compile Include="Assets\Scripts\Soldiers\SoldierType.cs" />
+    <Compile Include="Assets\Scripts\Soldiers\SoldiersAI.cs" />
+    <Compile Include="Assets\Scripts\Soldiers\TeamTag.cs" />
+    <Compile Include="Assets\Scripts\SoldiersActions\Attack.cs" />
+    <Compile Include="Assets\Scripts\SoldiersActions\Damage.cs" />
+    <Compile Include="Assets\Scripts\SoldiersActions\Movement.cs" />
+    <Compile Include="Assets\Scripts\SoldiersActions\Select.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Arrow.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Baner.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Bow.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Sword.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

@@ -14,6 +14,9 @@ public static class CalculateMovePosition
         matrix = new Vector3[sqrt, sqrt];
         var stepX = 0f;
         var stepZ = 0f;
+        var offset = 0f;
+        if (sqrt > 2) offset = (sqrt / 2) * step * -1f;
+        stepX = offset;
         for (int i = 0; i < sqrt; i++)
         {
             for (int j = 0; j < sqrt; j++)
@@ -21,7 +24,7 @@ public static class CalculateMovePosition
                 matrix[i, j] = new Vector3(stepX, 0.3f, stepZ);
                 stepX += step;
             }
-            stepX = step;
+            stepX = offset;
             stepZ += step;
         }
         return matrix;
