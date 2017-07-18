@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class Bow : MonoBehaviour, IWeapon
+public class Airstrip : MonoBehaviour, IWeapon
 {
-    public GameObject arrowPrefab;
-    public Transform bowTransform;
+    public GameObject planePrefab;
+    public Transform airstrip;
     private SoldierController myContrl;
-    private float angle = 30f;
-    private float gravity = 25f;
+    private float angle = 65f;
+    private float gravity = 20f;
 
     private void Awake()
     {
@@ -23,20 +23,20 @@ public class Bow : MonoBehaviour, IWeapon
     {
         Vector3 TargetPos = soldierContr.GetPositions();
         TargetPos.y = 0f;
-        GameObject newArrow = Instantiate(arrowPrefab, bowTransform.position, bowTransform.rotation);
-        float targetDistance = Vector3.Distance(bowTransform.position, TargetPos);
+        GameObject newPlane = Instantiate(planePrefab, airstrip.position, airstrip.rotation);
+        float targetDistance = Vector3.Distance(airstrip.position, TargetPos);
         float projectileVelocity = targetDistance / (Mathf.Sin(2f * angle * Mathf.Deg2Rad) / gravity);
-        newArrow.GetComponent<Arrow>().AttackPower = myContrl.SoldierInterface.AttackPower;
-        newArrow.GetComponent<Arrow>().EnemyTeamTag = myContrl.EnemyTeamTag;
-        newArrow.GetComponent<Arrow>().DestinationPoint = TargetPos;
+        newPlane.GetComponent<Plane>().AttackPower = myContrl.SoldierInterface.AttackPower;
+        newPlane.GetComponent<Plane>().EnemyTeamTag = myContrl.EnemyTeamTag;
+        newPlane.GetComponent<Plane>().DestinationPoint = TargetPos;
         float Vx = Mathf.Sqrt(projectileVelocity) * Mathf.Cos(angle * Mathf.Deg2Rad);
         float Vy = Mathf.Sqrt(projectileVelocity) * Mathf.Sin(angle * Mathf.Deg2Rad);
         float flightDuration = targetDistance / Vx;
-        newArrow.transform.rotation = Quaternion.LookRotation(TargetPos - newArrow.transform.position);
+        newPlane.transform.rotation = Quaternion.LookRotation(TargetPos - newPlane.transform.position);
         float elapseTime = 0;
         while (elapseTime < flightDuration)
         {
-            newArrow.transform.Translate(0, (Vy - (gravity * elapseTime)) * Time.deltaTime, Vx * Time.deltaTime);
+            newPlane.transform.Translate(0, (Vy - (gravity * elapseTime)) * Time.deltaTime, Vx * Time.deltaTime);
             elapseTime += Time.deltaTime;
             yield return null;
         }

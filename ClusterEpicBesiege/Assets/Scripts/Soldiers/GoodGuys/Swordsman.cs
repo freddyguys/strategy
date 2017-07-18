@@ -8,6 +8,8 @@ public class Swordsman : MonoBehaviour, ISoldier
     float detectionRadius = 7f;
     float movementSpeed = 2f;
     float rotationSpeed = 8f;
+    float cooldown = 1f;
+    TeamTag tag = TeamTag.GoodGuy;
 
     public float AttackPower { get { return attackPower; } set { attackPower = value; } }
     public float AttackRange { get { return attackRange; } set { attackRange = value; } }
@@ -15,6 +17,7 @@ public class Swordsman : MonoBehaviour, ISoldier
     public float Health { get { return health; } set { health = value; } }
     public float MovementSpeed { get { return movementSpeed; } set { movementSpeed = value; } }
     public float RotationSpeed { get { return rotationSpeed; } set { rotationSpeed = value; } }
+    public float Cooldown { get { return cooldown; } set { cooldown = value; } }
     public SoldierType Type { get { return SoldierType.Swordsman; } }
-    public TeamTag Tag { get { return TeamTag.GoodGuy; } }
+    public TeamTag Tag { get { return tag; } set { tag = value; } }
 }

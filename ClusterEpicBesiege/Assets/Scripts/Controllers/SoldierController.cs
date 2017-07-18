@@ -18,8 +18,6 @@ public class SoldierController : MonoBehaviour
     private GameObject Weapon;
 
 
-
-
     public ISoldier SoldierInterface;
     public IAttackable AttackInterface;
     public IDamageable DamageInterface;
@@ -42,6 +40,7 @@ public class SoldierController : MonoBehaviour
     public bool IsFind { get { return isFind; } set { isFind = value; } }
     public bool IsMove { get { return isMove; } set { isMove = value; } }
     public bool IsMoveToTarget { get { return isMoveToTarget; } set { isMoveToTarget = value; } }
+    public TeamTag EnemyTeamTag { get { return enemyTeamTag; } set { enemyTeamTag = value; } }
     public Animator Animator { get { return animator; } }
 
 
@@ -86,21 +85,23 @@ public class SoldierController : MonoBehaviour
             if (_targetContrl != null)
             {
                 isFind = false;
-                AttackInterface.AttackTarget(_targetContrl);
+                targetContrl = _targetContrl;
+                AttackInterface.AttackTarget(targetContrl);
             }
         }
 
-        if (isMove && isMoveToTarget)
+        if (isMove && isMoveToTarget && targetContrl != null)
         {
-            //if (agent.remainingDistance <= SoldierInterface.AttackRange)
             if (Vector3.Distance(GetPositions(), TargetContr.GetPositions()) <= SoldierInterface.AttackRange)
             {
-                isMoveToTarget = false;
                 isMove = false;
+                isMoveToTarget = false;
                 agent.Stop();
                 agent.ResetPath();
                 AttackInterface.AttackTarget(targetContrl);
             }
+            else MoveInterface.MoveTo(TargetContr.GetPositions());
+
         }
 
         if (isMove && !isMoveToTarget)
@@ -115,13 +116,25 @@ public class SoldierController : MonoBehaviour
         if (targetContrl != null)
         {
             Vector3 lookPos = targetContrl.GetPositions() - GetPositions();
-            Quaternion rotation = Quaternion.LookRotation(lookPos);
-            myTransform.rotation = Quaternion.Slerp(myTransform.rotation, rotation, Time.deltaTime * SoldierInterface.RotationSpeed);
+            if (lookPos != Vector3.zero)
+            {
+                Quaternion rotation = Quaternion.LookRotation(lookPos);
+                myTransform.rotation = Quaternion.Slerp(myTransform.rotation, rotation, Time.deltaTime * SoldierInterface.RotationSpeed);
+            }
         }
     }
 
     public Vector3 GetPositions()
     { return transform.position; }
+
+    public void SetTeam(TeamTag tag)
+    {
+        SoldierInterface.Tag = tag;
+        transform.parent.gameObject.tag = tag.ToString();
+        SelectInterface.ChangeColor(SoldierInterface.Tag);
+        targetContrl = null;
+        enemyTeamTag = SoldierInterface.Tag == TeamTag.BadGuy ? TeamTag.GoodGuy : TeamTag.BadGuy;
+    }
 
     public void StopSoldier()
     {
@@ -133,6 +146,6 @@ public class SoldierController : MonoBehaviour
     {
         isAlive = false;
         GameController.instance.DeleateSoldier(GetComponent<SoldierController>());
-        // dead animation
+        Destroy(transform.parent.gameObject);
     }
 }

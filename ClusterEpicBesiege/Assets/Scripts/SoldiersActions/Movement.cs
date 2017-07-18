@@ -14,7 +14,6 @@ public class Movement : MonoBehaviour, IMovable
 
     public void MoveTo(Vector3 position)
     {
-        myContrl.IsFind = false;
         myContrl.IsMove = true;
         agent.Resume();
         agent.speed = myContrl.SoldierInterface.MovementSpeed;

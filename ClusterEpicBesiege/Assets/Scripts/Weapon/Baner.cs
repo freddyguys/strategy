@@ -1,21 +1,37 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Baner : MonoBehaviour, IWeapon
 {
-    Animator animator;
-    SoldierController myContrl;
+    private float actionRadius = 3f;
 
-    private void Awake()
+    public void WeaponAttack(SoldierController targetContrl)
     {
-        animator = transform.parent.parent.GetComponent<Animator>();
-        myContrl = transform.parent.GetComponent<SoldierController>();
+        FindRecruit();
     }
-    public void WeaponAttack()
+
+    public void FindRecruit()
     {
-        myContrl.TargetContr.DamageInterface.DealDamage(myContrl.SoldierInterface.AttackPower);
+        List<SoldierController> soldiers = new List<SoldierController>();
+        foreach (Collider col in Physics.OverlapSphere(transform.position, actionRadius))
+        {
+            if (col.tag == "GoodGuy" && col.transform.GetChild(0).GetComponent<SoldierController>().IsAlive) soldiers.Add(col.transform.GetChild(0).GetComponent<SoldierController>());
+        }
+        StartCoroutine(Recruitment(soldiers));
     }
-    // add Animation!!
+
+    IEnumerator Recruitment(List<SoldierController> soldiers)
+    {
+        yield return new WaitForSecondsRealtime(5f);
+        List<SoldierController> newSoldiers = new List<SoldierController>();
+        foreach (Collider col in Physics.OverlapSphere(transform.position, actionRadius))
+        {
+            if (col.tag == "GoodGuy" && col.transform.GetChild(0).GetComponent<SoldierController>().IsAlive) newSoldiers.Add(col.transform.GetChild(0).GetComponent<SoldierController>());
+        }
+        foreach (SoldierController soldier in soldiers)
+        {
+            if (newSoldiers.Contains(soldier)) soldier.SetTeam(TeamTag.BadGuy);
+        }
+    }
 }

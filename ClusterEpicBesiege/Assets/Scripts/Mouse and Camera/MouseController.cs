@@ -28,8 +28,10 @@ public class MouseController : MonoBehaviour
             mousePosition = Input.mousePosition;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            Physics.Raycast(ray, out hit);
-            if (hit.collider.tag == "GoodGuy") { isSelecting = false; unitSelected.Add(hit.collider.transform.GetChild(0).GetComponent<SoldierController>()); Select(); }
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.tag == "GoodGuy") { isSelecting = false; unitSelected.Add(hit.collider.transform.GetChild(0).GetComponent<SoldierController>()); Select(); }
+            }
         }
         if (Input.GetMouseButtonUp(0))
         {
@@ -45,6 +47,7 @@ public class MouseController : MonoBehaviour
                 SoldierController soldier = null;
                 if (hitPoint.collider.tag == "BadGuy") { soldier = hitPoint.collider.transform.GetChild(0).GetComponent<SoldierController>(); ShowEffect(hitPoint.point, attackEffect); } else { ShowEffect(hitPoint.point, moveToEffect); }
                 MoveUnits(hitPoint.point, soldier);
+                Deselect(); unitSelected.Clear();
             }
         }
     }

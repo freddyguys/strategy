@@ -89,10 +89,10 @@
     <Compile Include="Assets\Scripts\Mouse and Camera\MovingCamera.cs" />
     <Compile Include="Assets\Scripts\Mouse and Camera\SelectedArea.cs" />
     <Compile Include="Assets\Scripts\SoldierSpawner.cs" />
+    <Compile Include="Assets\Scripts\Soldiers\BadGuys\Airman.cs" />
     <Compile Include="Assets\Scripts\Soldiers\BadGuys\Banerman.cs" />
     <Compile Include="Assets\Scripts\Soldiers\GoodGuys\Archer.cs" />
     <Compile Include="Assets\Scripts\Soldiers\GoodGuys\Swordsman.cs" />
-    <Compile Include="Assets\Scripts\Soldiers\Soldier.cs" />
     <Compile Include="Assets\Scripts\Soldiers\SoldierType.cs" />
     <Compile Include="Assets\Scripts\Soldiers\SoldiersAI.cs" />
     <Compile Include="Assets\Scripts\Soldiers\TeamTag.cs" />
@@ -100,9 +100,11 @@
     <Compile Include="Assets\Scripts\SoldiersActions\Damage.cs" />
     <Compile Include="Assets\Scripts\SoldiersActions\Movement.cs" />
     <Compile Include="Assets\Scripts\SoldiersActions\Select.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Airstrip.cs" />
     <Compile Include="Assets\Scripts\Weapon\Arrow.cs" />
     <Compile Include="Assets\Scripts\Weapon\Baner.cs" />
     <Compile Include="Assets\Scripts\Weapon\Bow.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Plane.cs" />
     <Compile Include="Assets\Scripts\Weapon\Sword.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

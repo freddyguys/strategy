@@ -1,4 +1,4 @@
 ﻿public interface IWeapon
 {
-    void WeaponAttack();
+    void WeaponAttack(SoldierController targetContrl);
 }
